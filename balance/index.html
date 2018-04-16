@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>余额</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" type="text/css" href="../common/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css">
+    <script src="../common/scripts/jquery.min.js"></script>
+    <script src="../common/scripts/loading.js"></script>
+    <script src="../common/scripts/linkurl.js"></script>
+	<script>
+		if(isApp()){//在app内打开引入5.0框架
+			var ua = navigator.userAgent.toLowerCase();
+			if (/iphone|ipad|ipod/.test(ua)) {
+				document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/cordova.js"><\/script>');
+				document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/js\/DCPlugin.js"><\/script>');
+				document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/plugins\/barcodescanner.js"><\/script>');
+			} else if (/android/.test(ua)) {
+				document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/android\/cordova.js"><\/script>');
+			}
+		}
+
+		if (isApp()) {
+			document.addEventListener("deviceready", function () {
+				// 获取用户信息
+				Dcbaseapi.getUserInfo(
+						function(data){
+							// 如果用户没有登录，则跳转登录页
+							if(typeof(data.userid) == "undefined"){
+								Dcbaseapi.login(
+										function(accessticket){
+											Dcbaseapi.getUserInfo(
+													function(data){
+														window.sessionStorage.setItem('userInfo',JSON.stringify(data));
+														localStorage.userid = data.userid;
+													},
+													function(error){
+
+													}
+											);
+										},
+										function(error){
+										}
+								);
+							}else{
+								//localStorage.userinfo = JSON.stringify(data);
+								window.sessionStorage.setItem('userInfo',JSON.stringify(data));
+								localStorage.userid = data.userid;
+							}
+						},
+						function(error){
+							loadingFail("获取用户信息失败，详细为：" + JSON.stringify(error));
+						}
+				);
+			});
+		}
+	</script>
+</head>
+<body>
+<div class="wrap borderbottom">
+    <div class="wrapleft">姓名：</div>
+    <div class="wrapaver" id="name"></div>
+</div>
+<div class="wrap borderbottom">
+    <div class="wrapleft">卡号：</div>
+    <div class="wrapaver" id="citizen_card_no"></div>
+</div>
+<div class="wrap borderbottom">
+    <div class="wrapleft">余额：</div>
+    <div class="wrapaver" id="total_balance"></div>
+</div>
+</body>
+</html>
+<script>
+	$(function  (){
+		$.ajax({
+			type: "POST",
+			url: "http://smk-card.cloudapps-test.scity.cn/ajax/virtual/service/query/PersonalQueryService.checkBalance.do",
+			data:{
+				USER_ID:localStorage.userid
+			},
+			dataType: "json",
+			success: function(ret){
+				if(ret&& ret.map.RTN_CODE=="000000"){
+					$("#name").text(ret.map.CUSTOMER_NAME);
+					$("#citizen_card_no").text(ret.map.CITIZEN_CARD_NO);
+					$("#total_balance").text(ret.map.TOTAL_BALANCE);
+				}else{
+					loadingFail(ret.map.RTN_MSG);
+				}
+			},
+			error:function(ret){
+				loadingFail(ret.map.RTN_MSG);
+			}
+		});
+	});
+
+</script>

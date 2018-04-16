@@ -1,0 +1,56 @@
+.max{
+    width: 100%;
+}
+.top{
+    width:100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display:box;
+    background: #fff;
+    color:#333;
+
+}
+.left{
+    -box-flex:6;
+    -webkit-box-flex:6;
+    -moz-box-flex:6;
+}
+.right{
+
+    /*  background: red;*/
+    height:11rem;
+    position: relative;
+
+    width: 18rem;
+    -box-flex:4;
+    -webkit-box-flex:4;
+    -moz-box-flex:4;
+    text-align: center;
+    margin: 1rem;
+}
+.right p{
+    border:1px solid #ddd;
+    width: 100%;
+    text-align: center;
+    line-height: 11.8rem;
+    /*  background: #fff;*/
+    height:11.8rem;
+    font-size: 1.5rem;
+}
+.right div{
+    /*margin: 1rem;*/
+    height:11.8rem;
+    width: 100%;
+}
+.right div img{
+    height:11.8rem;
+    width: 100%;
+    vertical-align: middle;
+}
+.wrap .wrapleft {
+    width: 6rem;
+    font-size: 1.4rem;
+}
+.wrapaver{
+    font-size: 1.4rem;
+}

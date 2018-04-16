@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>缴暖气费</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" type="text/css" href="../common/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/swiper.min.css">
+    <script src="../common/scripts/jquery.min.js"></script>
+    <script src="../common/scripts/linkurl.js"></script>
+    <script src="../common/scripts/loading.js"></script>
+    <script src="../common/scripts/ifOnline.js"></script>
+    <style>
+        .btn{
+            margin-top: 8rem !important;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap borderbottom">
+    <div class="wrapleft">缴费单位：</div>
+    <div class="wrapaver" style="width: 10rem;" id="username"><!--王凤来--></div>
+</div>
+<div class="wrap borderbottom">
+    <div class="wrapleft">用户编号：</div>
+    <div class="wrapaver">
+        <input id="idNumber" type="text" placeholder="请输入用户编号">
+    </div>
+
+</div>
+<div class="btn" onclick="fun()">下一步</div>
+<script>
+    $("#username").html(localStorage.familyType);
+    function fun() {
+        if($("#idNumber").val()==""){
+            toast("用户编号不能为空");
+            return
+        }
+        localStorage.idNumber=$("#idNumber").val();
+        location.href="./payPassword.html";
+    }
+</script>
+</body>
+</html>

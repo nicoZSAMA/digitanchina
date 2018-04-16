@@ -1,0 +1,128 @@
+<html>
+<head>
+    <title>缴有线费</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" type="text/css" href="../common/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/swiper.min.css">
+    <script src="../common/scripts/jquery.min.js"></script>
+    <script src="../common/scripts/linkurl.js"></script>
+    <script src="../common/scripts/loading.js"></script>
+    <script src="../common/scripts/ifOnline.js"></script>
+    <style type="text/css">
+        .listwrap{
+            display: none;
+        }
+        .listbg{
+            background: rgba(0,0,0,.6);
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+        }
+        .list{
+            z-index: 100;
+            background: #fff;
+            position: fixed;
+            width: 80%;
+            border-radius: 4px;
+            top: 50%;
+            left: 50%;
+            margin: auto;
+            -webkit-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+        }
+        .list ul li{
+            list-style: none;
+            line-height: 1.8rem;
+            border-bottom: 1px solid #ddd;
+            padding:0.6rem 1rem;
+            font-size: 1.6rem;
+        }
+        .list ul li:last-child{
+            border-bottom: none;
+        }
+        .fen{
+            line-height:1.8rem;
+            border: 1px solid #ccc;
+            padding: 1.4rem 1rem;
+            text-align: center;
+        }
+        div.wrap.borderbottom{
+            margin-top:12rem;
+            border-bottom: none;
+            padding: 1rem 2rem;
+        }
+        .actived{
+            background: #3d8ad8;
+            color: #fff;
+        }
+        .btn{
+            margin-top: 8rem !important;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap borderbottom">
+    <!-- <div class="wrapleft double"><br>分类</div> -->
+    <div class="wrapaver fen" id="familyType" onclick="showList()"> <span style="float: right; padding-top: 0.5rem;"><img src="./images/rightdown_03.png" alt=""></span>— <span class="fenlei">请选择缴费单位</span> — </div>
+    <!-- <select id="familyType">
+            <option value="" selected="">请选择</option>
+            <option value="1" data-name="bshj">本市户籍居民家庭</option>
+            <option value="2" data-name="zjbd">驻京部队现役军人和现役武警家庭</option>
+            <option value="3" data-name="jzz">持有效《北京市工作居住证》家庭</option>
+            <option value="41" data-name="shbx5">非本市户籍家庭（连续5年（含）以上在本市缴纳社会保险）</option>
+            <option value="42" data-name="grsds5">非本市户籍家庭（连续5年（含）以上在本市缴纳个人所得税）</option>
+            <option value="5" data-name="gajt">港澳台家庭</option>
+            <option value="6" data-name="wjjt">外籍家庭</option>
+        </select> -->
+</div>
+
+<div class="btn" onclick="goSelectCode()">下一步</div>
+
+<div class="listwrap">
+    <div class="listbg"></div>
+    <div class="list">
+        <ul>
+            <li data-name="北京歌华有线电视公司">北京歌华有线电视公司</li>
+            <li data-name="北京航天数字电视公司">北京航天数字电视公司</li>
+            <li data-name="北京海淀有线广播电视公司">北京海淀有线广播电视公司</li>
+        </ul>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        $(".list ul li").on('click',function(){
+            $(this).addClass("actived").siblings().removeClass("actived");
+            $(".fenlei").html($(this).html())
+            localStorage.familyType=$(this).attr('data-name');//跳转页面使用
+            /*localStorage.family_type=$(this).attr('data-val');//请求接口使用*/
+            setTimeout(function(){
+                $(".listwrap").hide();
+            },100)
+
+        })
+    })
+    function showList(){
+        $(".listwrap").show();
+    }
+    function goSelectCode(){
+        if($(".fenlei").html()=="请选择缴费单位"){
+            toast("请选择缴费单位");
+            return;
+        }
+        /*localStorage.familyType=$("#familyType option:selected").attr('data-name');//跳转页面使用
+         localStorage.family_type=$("#familyType").val();//请求接口使用*/
+        location.href="./jiaofeiId.html";
+    }
+</script>
+</html>

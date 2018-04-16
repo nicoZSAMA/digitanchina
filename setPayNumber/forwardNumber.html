@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>支付密码</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" type="text/css" href="../common/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <script src="../common/scripts/jquery.min.js"></script>
+    <script src="../common/scripts/loading.js"></script>
+    <script src="../common/scripts/linkurl.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="max">
+    <div class="header">
+        <div class="left">
+            <a href="javascript:void(0);" onclick="modifyPassword()">修改支付密码</a>
+        </div>
+        <div class="right">
+            <a href="javascript:void(0);" onclick="forgetPassword()" class="active">忘记支付密码</a>
+        </div>
+    </div>
+
+    <div class="wrap borderbottom">
+        <div class="wrapleft" style="font-size: 1.4rem">预留手机号：</div>
+        <div class="wrapaver">
+            <input id="phoneNumber" type="tel" placeholder="请输入预留手机号">
+        </div>
+        <!--<div class="arrow"><img src="images/righticon.png"></div>-->
+    </div>
+    <div class="wrap borderbottom">
+        <div class="wrapleft" style="font-size: 1.4rem">验证码：</div>
+        <div class="wrapaver">
+            <input id="verifyCode" type="tel" placeholder="请输入验证码">
+            <input id="verifyButton" onclick="sendVCode()" type="button" value="发送验证码">
+        </div>
+        <!--<div class="arrow"><img src="images/righticon.png"></div>-->
+    </div>
+    <div class="btn" onclick="forwardNumber()">
+        提交
+    </div>
+</div>
+<script>
+	function setPassword() {
+        location.href="./index.html";
+    }
+    function modifyPassword() {
+        location.href="./modifyNumber.html";
+    }
+    function forgetPassword() {
+        location.href="./forwardNumber.html";
+    }
+    var telmsg=/^1[34578]\d{9}$/;
+
+    function forwardNumber() {
+
+        if($("#phoneNumber").val()==""){
+            toast("请输入手机号");
+            return;
+        }else if(!(telmsg.test($("#phoneNumber").val()))){
+            toast("手机号格式错误");
+            return;
+        }
+        if($("#verifyCode").val()==""){
+            toast("请输验证码");
+            return
+        }
+      /*  $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/virtual-card/ajax/virtual/service/apply/PayPassWordService.phoneDoVerify.do",
+            data:{
+                BUSINESSTYPE:"04",
+                MOBILENUM:  $("#phoneNumber").val(),
+                VCODE:$("#verifyCode").val()
+            },
+            dataType: "json",
+            success: function(ret){
+                if(ret&& ret.error=="000000"){
+                    loadingSuccess(ret.message);
+                }else{
+                    loadingFail(ret.message);
+                }
+            },
+            error:function(ret){
+                loadingFail(ret.error);
+            }
+        });*/
+        loadingSuccess("验证成功");
+
+        setTimeout(function(){ location.href="./index.html";}, 1000);
+    }
+    function sendVCode(){
+        if($("#phoneNumber").val()==""){
+            toast("请输入手机号");
+            return;
+        }else if(!(telmsg.test($("#phoneNumber").val()))){
+            toast("手机号格式错误");
+            return;
+        }
+      /*  $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/virtual-card/ajax/virtual/service/apply/PayPassWordService.phoneVerify.do",
+            data:{
+                Phone_Number:  $("#phoneNumber").val()
+            },
+            dataType: "json",
+            success: function(ret){
+                if(ret&& ret.error=="000000"){
+                    loadingSuccess(ret.message);
+                }else{
+                    loadingFail(ret.message);
+                }
+            },
+            error:function(ret){
+                loadingFail(ret.error);
+            }
+        });*/
+        loadingSuccess("验证码已发送");
+
+    }
+</script>
+</body>
+</html>

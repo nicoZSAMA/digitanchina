@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>卡应用</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" type="text/css" href="../common/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css">
+    <script src="../common/scripts/jquery.min.js"></script>
+    <script src="../common/scripts/loading.js"></script>
+    <script src="../common/scripts/linkurl.js"></script>
+    <script>
+        if(isApp()){//在app内打开引入5.0框架
+            var ua = navigator.userAgent.toLowerCase();
+            if (/iphone|ipad|ipod/.test(ua)) {
+                document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/cordova.js"><\/script>');
+                document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/js\/DCPlugin.js"><\/script>');
+                document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/ios\/plugins\/barcodescanner.js"><\/script>');
+            } else if (/android/.test(ua)) {
+                document.write('<script type="text\/javascript" charset="utf-8" src="http:\/\/m.scity.cn\/frame\/android\/cordova.js"><\/script>');
+            }
+        }
+
+        if (isApp()) {
+            document.addEventListener("deviceready", function () {
+                // 获取用户信息
+                Dcbaseapi.getUserInfo(
+                        function(data){
+                            // 如果用户没有登录，则跳转登录页
+                            if(typeof(data.userid) == "undefined"){
+                                Dcbaseapi.login(
+                                        function(accessticket){
+                                            Dcbaseapi.getUserInfo(
+                                                    function(data){
+                                                        window.sessionStorage.setItem('userInfo',JSON.stringify(data));
+                                                        localStorage.userid = data.userid;
+                                                    },
+                                                    function(error){
+
+                                                    }
+                                            );
+                                        },
+                                        function(error){
+                                        }
+                                );
+                            }else{
+                                //localStorage.userinfo = JSON.stringify(data);
+                                window.sessionStorage.setItem('userInfo',JSON.stringify(data));
+                                localStorage.userid = data.userid;
+                            }
+                        },
+                        function(error){
+                            loadingFail("获取用户信息失败，详细为：" + JSON.stringify(error));
+                        }
+                );
+            });
+        }
+    </script>
+    <style>
+        #money{
+            width:5.5rem;
+            margin-right: 1rem;
+        }
+        .wrapaver .money{
+            margin-left:4rem;
+            margin-right:1rem;
+        }
+        .wrap .wrapbook{
+            width:12rem;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="wrap borderbottom">
+        <div class="wrapleft">姓名：</div>
+        <div class="wrapaver">
+            <input id="name" type="text" value="" readonly>
+        </div>
+    </div>
+    <div class="wrap borderbottom">
+        <div class="wrapleft">卡号：</div>
+        <div class="wrapaver">
+            <input id="citizen_card_no" type="text" value="" readonly>
+        </div>
+    </div>
+    <div class="wrap borderbottom">
+        <div class="wrapleft wrapbook"><span id="app_name"></span></div>
+        <div class="wrapaver">
+            <span class="money">押金</span><input id="money" type="text" value="" readonly>
+        </div>
+    </div>
+    <div class="btn" onclick="func()">提交</div>
+    <script>
+        function func() {
+			var userid = localStorage.userid;
+            var params = localStorage.getItem(userid+"APPS");
+			if(params==null || params==""){
+				toast("无法获取用户参数");
+				return;
+			}
+			var paramArray = params.split("_");
+            $.ajax({
+				type: "POST",
+				url:"http://smk-card.cloudapps-test.scity.cn/ajax/virtual/service/code/AppControlService.saveAppsStop.do",
+				data:{
+					USER_ID:userid,
+					APP_TYPE:paramArray[0],
+					AMOUNT:paramArray[1],
+					CITIZEN_CARD_NO:$("#citizen_card_no").val()
+				},
+				dataType: "json",
+				success: function(ret){
+					if(ret&& ret.map.RTN_CODE=="000000"){
+						loadingSuccess("应用关闭成功");
+						location.href="./index.html";
+					}else{
+						loadingFail(ret.map.RTN_MSG);
+					}
+				},
+				error:function(ret){
+					loadingFail(ret.map.RTN_MSG);
+				}
+			});
+        }
+    </script>
+    <script>
+        $(function  (){
+            var userid = localStorage.userid;
+            var str = localStorage.getItem(userid+"APPS");
+            var APP_TYPE = str.split("_")[0];
+            var REFER_VALUE = str.split("_")[1];
+            var APP_NAME = str.split("_")[2];
+            $("#money").val(REFER_VALUE);
+            $("#app_name").text(APP_NAME);
+            $.ajax({
+                type: "POST",
+                //url: "http://smk-card.cloudapps-test.scity.cn/ajax/virtual/service/query/PersonalQueryService.checkBalance.do",
+				url: "http://smk-card.cloudapps-test.scity.cn/ajax/virtual/service/query/PersonalQueryService.checkBalance.do",
+                data:{
+                    USER_ID:userid
+                },
+                dataType: "json",
+                success: function(ret){
+                    if(ret&& ret.map.RTN_CODE=="000000"){
+                        $("#name").val(ret.map.CUSTOMER_NAME);
+                        $("#citizen_card_no").val(ret.map.CITIZEN_CARD_NO);
+                    }else{
+                        loadingFail(ret.map.RTN_MSG);
+                    }
+                },
+                error:function(ret){
+                    loadingFail(ret.map.RTN_MSG);
+                }
+            });
+        });
+
+    </script>
+
+</div>
+</body>
+</html>
